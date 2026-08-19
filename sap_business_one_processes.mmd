@@ -1,0 +1,162 @@
+flowchart LR
+    %% SAP Business One - Process Overview
+    %% Based on the supplied process image
+
+    %% --- CRM / SRM ---
+    Activities((Activities))
+    Customer((Customer))
+    Lead((Lead))
+    Supplier((Supplier))
+    BP["Business Partner<br/>Master"]
+    Opportunity((Opportunity))
+    Pricing((Pricing))
+    PurchaseRequest((Purchase Request))
+    PurchaseQuotation((Purchase Quotation))
+
+    %% --- Service ---
+    CustomerEquipmentCard((Customer<br/>Equipment Card))
+    ServiceCall((Service Call))
+    ServiceContract((Service Contract))
+    ServiceBilling((Service Billing))
+
+    %% --- Inventory / Sales ---
+    ItemMaster((Item Master))
+    WarehouseManagement((Warehouse<br/>Management))
+    SalesQuotation((Sales Quotation))
+    SalesOrder((Sales Order))
+    DeliveryNote((Delivery Note))
+    GoodsReceiptPO((Goods Receipt PO))
+    ARInvoice((AR Invoice))
+    IncomingPayments((Incoming<br/>Payments))
+    OutgoingPayments((Outgoing<br/>Payments))
+
+    %% --- Purchasing ---
+    Sourcing((Sourcing))
+    PurchaseOrder((Purchase Order))
+    MaterialRequirements((Material<br/>Requirements<br/>Planning))
+    DemandPlanning((Demand<br/>Planning))
+    BackorderReporting((Backorder<br/>Reporting))
+    BillOfMaterials((Bill of Materials))
+
+    %% --- Production ---
+    ProductionOrder((Production Order))
+    IssueToProduction((Issue to Production))
+    ReceiptFromProduction((Receipt from Production))
+    FinancialPostings((Financial Postings))
+    JournalEntries((Journal Entries))
+
+    %% --- Finance ---
+    APAR((AP / AR))
+    APInvoice((AP Invoice))
+    CashManagement((Cash Management))
+    Reconciliation((Reconciliation))
+    FinancialReporting((Financial<br/>Reporting))
+    ChartOfAccounts((Chart of Accounts))
+    GeneralLedger((General Ledger<br/>Accounts))
+    GLAccountDetermination((G/L Account<br/>Determination))
+    CostAccounting((Cost Accounting))
+
+    %% --- Reporting ---
+    InventoryAuditReport((Inventory Audit<br/>Report))
+    AccountBalancesReport((Account Balances<br/>Report))
+    ProductReporting((Product<br/>Reporting))
+
+    %% CRM / SRM flow
+    Activities --> Customer
+    Customer --> Lead
+    Lead --> Opportunity
+    Customer --> Opportunity
+    Opportunity --> Pricing
+    Supplier --> PurchaseRequest
+    PurchaseRequest --> PurchaseQuotation
+    PurchaseQuotation --> PurchaseOrder
+    Supplier --> Sourcing
+    Lead -.-> CustomerEquipmentCard
+    Customer -.-> CustomerEquipmentCard
+    Supplier -.-> PurchaseQuotation
+
+    %% Service flow
+    CustomerEquipmentCard --> ServiceCall
+    ServiceCall --> ServiceContract
+    ServiceContract --> ServiceBilling
+    ServiceBilling -.-> FinancialPostings
+
+    %% Sales flow
+    Pricing --> SalesQuotation
+    SalesQuotation --> SalesOrder
+    SalesOrder --> DeliveryNote
+    DeliveryNote --> ARInvoice
+    ARInvoice --> IncomingPayments
+
+    %% Inventory flow
+    ItemMaster --> SalesOrder
+    ItemMaster --> PurchaseOrder
+    WarehouseManagement --> SalesOrder
+    PurchaseOrder --> GoodsReceiptPO
+    GoodsReceiptPO --> APInvoice
+
+    %% Purchasing / production
+    PurchaseOrder --> ProductionOrder
+    Sourcing --> ProductionOrder
+    MaterialRequirements --> ProductionOrder
+    BillOfMaterials --> ProductionOrder
+    DemandPlanning --> BackorderReporting
+    ProductionOrder --> IssueToProduction
+    IssueToProduction --> ReceiptFromProduction
+    ReceiptFromProduction --> FinancialPostings
+
+    %% Finance flow
+    APAR --> APInvoice
+    APInvoice --> OutgoingPayments
+    IncomingPayments --> CashManagement
+    OutgoingPayments --> CashManagement
+    APAR --> CashManagement
+    CashManagement --> Reconciliation
+    Reconciliation --> FinancialReporting
+    ChartOfAccounts --> GeneralLedger
+    GeneralLedger --> GLAccountDetermination
+    GLAccountDetermination --> CostAccounting
+    CostAccounting --> JournalEntries
+    ARInvoice --> JournalEntries
+    APInvoice --> JournalEntries
+    FinancialPostings --> JournalEntries
+
+    %% Reporting
+    InventoryAuditReport --> AccountBalancesReport
+    AccountBalancesReport --> ProductReporting
+    FinancialReporting --> ProductReporting
+    InventoryAuditReport -.-> WarehouseManagement
+    AccountBalancesReport -.-> GeneralLedger
+    ProductReporting -.-> Reconciliation
+
+    %% Cross-process relationships
+    PurchaseOrder -.-> APInvoice
+    SalesOrder -.-> FinancialPostings
+    DeliveryNote -.-> FinancialPostings
+    ProductionOrder -.-> FinancialPostings
+    SalesOrder -.-> InventoryAuditReport
+    ReceiptFromProduction -.-> InventoryAuditReport
+    DemandPlanning -.-> ProductionOrder
+    BillOfMaterials -.-> MaterialRequirements
+    ItemMaster -.-> InventoryAuditReport
+
+    %% Styling by process area
+    classDef crm fill:#4dbb24,color:#fff,stroke:#3b941c,stroke-width:2px;
+    classDef service fill:#ffff00,color:#111,stroke:#d6d600,stroke-width:2px;
+    classDef sales fill:#ff9800,color:#fff,stroke:#d77f00,stroke-width:2px;
+    classDef inventory fill:#888,color:#fff,stroke:#666,stroke-width:2px;
+    classDef purchasing fill:#078dcc,color:#fff,stroke:#056c9b,stroke-width:2px;
+    classDef finance fill:#ff1010,color:#fff,stroke:#c90000,stroke-width:2px;
+    classDef production fill:#640c72,color:#fff,stroke:#4d0958,stroke-width:2px;
+    classDef reporting fill:#df68e8,color:#fff,stroke:#b84fc0,stroke-width:2px;
+
+    class Activities,Customer,Lead,Supplier,BP,Opportunity,Pricing,PurchaseRequest,PurchaseQuotation crm;
+    class CustomerEquipmentCard,ServiceCall,ServiceContract,ServiceBilling service;
+    class SalesQuotation,SalesOrder,DeliveryNote,ARInvoice,IncomingPayments sales;
+    class ItemMaster,WarehouseManagement,GoodsReceiptPO,OutgoingPayments inventory;
+    class Sourcing,PurchaseOrder,MaterialRequirements,DemandPlanning,BackorderReporting,BillOfMaterials purchasing;
+    class APAR,APInvoice,CashManagement,Reconciliation,FinancialReporting,ChartOfAccounts,GeneralLedger,GLAccountDetermination,CostAccounting,FinancialPostings,JournalEntries finance;
+    class ProductionOrder,IssueToProduction,ReceiptFromProduction production;
+    class InventoryAuditReport,AccountBalancesReport,ProductReporting reporting;
+
+    linkStyle default stroke:#777,stroke-width:2px;
