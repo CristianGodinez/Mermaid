@@ -1,6 +1,6 @@
 # SAP Business One — Diagrama de procesos
 
-Diagrama reconstruido en Mermaid a partir de la imagen proporcionada.
+Diagrama reconstruido en Mermaid 
 
 ```mermaid
 flowchart LR
